@@ -1,0 +1,13 @@
+
+void foo(x : int@){
+  @x = 3;
+}
+
+void main()
+{
+  a: volatile int;
+  a = 5;
+  foo(&a);
+  c: int;
+  c = (a > 4) ? 6 : 8; 
+}
