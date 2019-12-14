@@ -37,16 +37,16 @@ else                             { yylval = makeNode("else", NULL, NULL) ; retur
 return                           { yylval = makeNode("return", NULL, NULL) ; return return_token; }
 volatile                         { yylval = makeNode("volatile", NULL, NULL) ; return volatile_token; }
 {sign}                           { yylval = makeNode(yytext[0], NULL, NULL) ; return yytext[0]; }
-{id}                             { yylval = makeNode("id" , yytext, NULL); return id; }
-{num}                            { yylval = makeNode("num" , yytext, NULL); return num; }
-{str}                            { yylval = makeNode("str" , yytext, NULL); return str; }
-{rel}                            { yylval = makeNode("relop" , yytext, NULL); return relop; }
-{addsub}                         { yylval = makeNode("addop" , yytext, NULL); return addop; }
-{muldiv}                         { yylval = makeNode("mulop" , yytext, NULL); return mulop; }
-"="                              { yylval = makeNode("assign" , yytext, NULL); return assign; }
-"&&"                             { yylval = makeNode("and" , yytext, NULL); return and; }
-"||"                             { yylval = makeNode("or" , yytext, NULL); return or; }
-"!"                              { yylval = makeNode("not" , yytext, NULL); return not; }
+{id}                             { yylval = makeNode("id" , yytext, NULL) ; return id_token; }
+{num}                            { yylval = makeNode("num" , yytext, NULL) ; return num_token; }
+{str}                            { yylval = makeNode("str" , yytext, NULL) ; return str_token; }
+{rel}                            { yylval = makeNode("relop" , yytext, NULL) ; return relop_token; }
+{addsub}                         { yylval = makeNode("addop" , yytext, NULL) ; return addop_token; }
+{muldiv}                         { yylval = makeNode("mulop" , yytext, NULL) ; return mulop_token; }
+"="                              { yylval = makeNode("assign" , yytext, NULL) ; return assign_token; }
+"&&"                             { yylval = makeNode("and" , yytext, NULL) ; return and_token; }
+"||"                             { yylval = makeNode("or" , yytext, NULL) ; return or_token; }
+"!"                              { yylval = makeNode("not" , yytext, NULL) ; return not_token; }
 {whitespace}                     ;
 {comment}                        ;
 .                                LexErr(); 

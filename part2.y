@@ -10,22 +10,52 @@ void yyerror(const char*);
 ParserNode* parseTree;
 %}
 
-%token EXP_END NUM_I NUM_F
-%left '+'
-%left '*'
+%token int_tok
+%token float_tok
+%token void_tok
+%token write_tok
+%token read_tok
+%token while_tok
+%token do_tok
+%token if_tok
+%token then_tok
+%token else_tok
+%token return_tok
+%token volatile_tok
+%token '('
+%token ')'
+%token '{'
+%token '}'
+%token '?'
+%token ','
+%token ':'
+%token ';'
+%token '&'
+%token '@'
+%token id_tok
+%token num_tok
+%token str_tok
+%token relop_tok
+%token addop_tok
+%token mulop_tok
+%token assign_tok
+%token and_tok
+%token or_tok
+%token not_tok
 
 %%
 
 PROGRAM:        FDEFS {}
 FDEFS:
                 FDEFS FUNC_API BLK{}
+
             |
                 FDEFS FUNC_API ';' {}
             |
                /* epsilon */
 
 FUNC_API:
-                TYPE id '(' FUNC_ARGS ')' {}
+                TYPE id_tok '(' FUNC_ARGS ')' {}
 
 FUNC_ARGS:
                 FUNC_ARGLIST {}
@@ -39,20 +69,20 @@ FUNC_ARGLIST:
 
 BLK:            '{' STLIST '}' {}
 
-DCL:            id ':' TYPE {}
+DCL:            id_tok ':' TYPE {}
             |
-                id ',' DCL {} 
+                id_tok ',' DCL {} 
 
 TYPE:
-                int {}
+                int_tok {}
             |
-                float {}
+                float_tok {}
             |
-                void {}
+                void_tok {}
             |
-                int'@' {}
+                int_tok'@' {}
             |
-                volatile int {}
+                volatile_tok int_tok {}
 
 STLIST:
                 STLIST STMT
@@ -80,68 +110,68 @@ STMT:
 
 
 RETURN:
-                return EXP ';'{}
+                return_tok EXP ';'{}
             |
-                return';'{}
+                return_tok';'{}
 
 WRITE:
-                write '(' EXP ')' ';'{}
+                write_tok '(' EXP ')' ';'{}
             |
-                write '(' str ')' ';'{}
+                write_tok '(' str_tok ')' ';'{}
 
 READ:
-                read '(' LVAL ')' ';'{}
+                read_tok '(' LVAL ')' ';'{}
 
 ASSN:
-                LVAL assign EXP ';'{}
+                LVAL assign_tok EXP ';'{}
 
 ASSN_C:
-                LVAL assign '('BEXP')''?' EXP ':' EXP{}
+                LVAL assign_tok '('BEXP')''?' EXP ':' EXP{}
 
 LVAL:
-                id{}
+                id_tok{}
             |
                 '@'EXP{}
 
 CNTRL:
-                if BEXP then STMT else STMT{}
+                if_tok BEXP then_tok STMT else_tok STMT{}
             |
-                if BEXP then STMT{}
+                if_tok BEXP then_tok STMT{}
             |
-                while BEXP do STMT{}
+                while_tok BEXP do_tok STMT{}
 
 BEXP:
-                BEXP or BEXP{}
+                BEXP or_tok BEXP{}
             |
-                BEXP and BEXP{}
+                BEXP and_tok BEXP{}
             |
-                not BEXP{}
+                not_tok BEXP{}
             |
-                EXP relop EXP{}
+                EXP relop_tok EXP{}
             |
                 '(' BEXP ')'{}
 
 EXP:
-                EXP addop EXP{}
+                EXP addop_tok EXP{}
             |
-                EXP mulop EXP{}
+                EXP mulop_tok EXP{}
             |
                 '(' EXP ')'{}
             |
                 '(' TYPE ')' EXP{}
             |
-                id{}
+                id_tok{}
             |
                 '&'EXP{}
             |
                 '@'EXP{}
             |
-                num{}
+                num_tok{}
             |
                 CALL{}
 
 CALL:
-                id '(' CALL_ARGS ')'{}
+                id_tok '(' CALL_ARGS ')'{}
 
 CALL_ARGS:
                 CALL_ARGLIST{}
