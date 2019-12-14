@@ -23,6 +23,8 @@ ParserNode *concatList(ParserNode *listHead,ParserNode *newItem);
 
 void dumpParseTree(void);
 
+#define YYSTYPE ParserNode
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
