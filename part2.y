@@ -17,10 +17,67 @@ ParserNode* parseTree;
 %%
 
 PROGRAM:  FDEFS {}
-FDEFS: FDEFS FUNC_API BLK{}
+FDEFS:
+     FDEFS FUNC_API BLK{}
      |
-       FDEFS FUNC_API ;
-        ;
+     FDEFS FUNC_API ';' {}
+     |
+     /* epsilon */
+
+FUNC_API:
+      TYPE id '(' FUNC_ARGS ')' {}
+
+FUNC_ARGS:
+      FUNC_ARGLIST {}
+      |
+       /* epsilon */
+       
+FUNC_ARGLIST: 
+      FUNC_ARGLIST ',' DCL {}
+      |
+      DCL {}
+              
+BLK:  '{' STLIST '}' {}
+
+DCL:   id ':' TYPE {}
+       |
+       id ',' DCL {} 
+      
+TYPE:
+      int {}
+      |
+      float {}
+      |
+      void {}
+      |
+      int'@' {}
+      |
+      volatile int {}
+      
+STLIST:
+      STLIST STMT
+      |
+      /* epsilon */
+      
+STMT:
+     DCL ';' {}
+     |
+     ASSN {}
+     |
+     EXP ';' {}
+     |
+     CNTRL {}
+     |
+     READ {}
+     |
+     WRITE {}
+     |
+     RETURN {}
+     | 
+     BLK {}
+     |
+     ASSN_C{}
+    
 
 %%
 
