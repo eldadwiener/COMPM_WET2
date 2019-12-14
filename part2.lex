@@ -1,7 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "part2.h"
+#include "part2_helpers.h"
 void LexErr();
 void printstr();
 %}
