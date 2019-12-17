@@ -41,7 +41,11 @@ volatile                         { yylval = makeNode("volatile", NULL, NULL) ; r
 {sign}                           { yylval = makeNode(yytext, NULL, NULL) ; return yytext[0]; }
 {id}                             { yylval = makeNode("id" , yytext, NULL) ; return id_tok; }
 {num}                            { yylval = makeNode("num" , yytext, NULL) ; return num_tok; }
-{str}                            { yylval = makeNode("str" , yytext, NULL) ; return str_tok; }
+{str}                            {
+                                    yytext[yyleng - 1] = 0;
+                                    yylval = makeNode("str" , yytext + 1, NULL) ;
+                                    return str_tok;
+                                    }
 {rel}                            { yylval = makeNode("relop" , yytext, NULL) ; return relop_tok; }
 {addsub}                         { yylval = makeNode("addop" , yytext, NULL) ; return addop_tok; }
 {muldiv}                         { yylval = makeNode("mulop" , yytext, NULL) ; return mulop_tok; }
@@ -51,10 +55,8 @@ volatile                         { yylval = makeNode("volatile", NULL, NULL) ; r
 "!"                              { yylval = makeNode("not" , yytext, NULL) ; return not_tok; }
 {whitespace}                     ;
 {comment}                        ;
-.                                LexErr(); 
+.                                LexErr();
 %%
-// TODO: should we remove quotes from str?
-
 
 void LexErr()
 {
@@ -63,9 +65,3 @@ void LexErr()
 }
 
 
-// TODO: REMOVE THIS
-void printstr()
-{
-    yytext[yyleng - 1] = 0;
-    printf("<str,%s>", yytext + 1);
-}

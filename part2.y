@@ -4,6 +4,8 @@
 #include "part2_helpers.h"
 
 extern int yylex();
+extern char* yytext;
+extern int yylineno;
 
 void yyerror(const char*);
 
@@ -330,6 +332,6 @@ CALL_ARGLIST:
 
 void yyerror(const char* msg)
 {
-    printf("yyerror %s\n", msg);
-    exit(2);
+    printf("Syntax error: '%s' in line number %d\n", yytext, yylineno);
+    exit(1);
 }
