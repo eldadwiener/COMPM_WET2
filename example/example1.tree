@@ -128,7 +128,7 @@
           )
         )
         (<STMT>
-          (<ASSN>
+          (<ASSN_C>
             (<LVAL>
               (<id,c>)
             )

@@ -2,12 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "part2_helpers.h"
+#include "part2.tab.h"
+
 void LexErr();
 void printstr();
 %}
 
 %option yylineno noyywrap
-%option   outfile="part2.lex.c" header-file="part2.lex.h"
+%option   outfile="part2-lex.c" header-file="part2-lex.h"
 
 digit       ([0-9])
 letter      ([a-zA-Z])
@@ -36,7 +38,7 @@ then                             { yylval = makeNode("then", NULL, NULL) ; retur
 else                             { yylval = makeNode("else", NULL, NULL) ; return else_tok; }
 return                           { yylval = makeNode("return", NULL, NULL) ; return return_tok; }
 volatile                         { yylval = makeNode("volatile", NULL, NULL) ; return volatile_tok; }
-{sign}                           { yylval = makeNode(yytext[0], NULL, NULL) ; return yytext[0]; }
+{sign}                           { yylval = makeNode(yytext, NULL, NULL) ; return yytext[0]; }
 {id}                             { yylval = makeNode("id" , yytext, NULL) ; return id_tok; }
 {num}                            { yylval = makeNode("num" , yytext, NULL) ; return num_tok; }
 {str}                            { yylval = makeNode("str" , yytext, NULL) ; return str_tok; }

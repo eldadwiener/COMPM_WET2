@@ -7,45 +7,34 @@ extern int yylex();
 
 void yyerror(const char*);
 
-ParserNode* parseTree;
+ParserNode* parseTree = NULL;
 %}
 
-%token int_tok
-%token float_tok
-%token void_tok
-%token write_tok
-%token read_tok
-%token while_tok
-%token do_tok
-%token if_tok
-%token then_tok
-%token else_tok
+%token int_tok float_tok void_tok
 %token return_tok
 %token volatile_tok
-%token '('
-%token ')'
-%token '{'
-%token '}'
-%token '?'
-%token ','
-%token ':'
-%token ';'
-%token '&'
-%token '@'
+%token write_tok read_tok
 %token id_tok
 %token num_tok
 %token str_tok
-%token relop_tok
-%token addop_tok
-%token mulop_tok
-%token assign_tok
-%token and_tok
-%token or_tok
-%token not_tok
+%right while_tok do_tok if_tok then_tok else_tok
+%right assign_tok
+%left or_tok
+%left and_tok
+%left relop_tok
+%left addop_tok
+%left mulop_tok
+%right not_tok
+%left '(' '{'
+%left ')' '}'
+%left '?' ',' ':' ';' '&' '@'
 
 %%
 
-PROGRAM:        FDEFS { $$ = makeNode("PROGRAM", NULL, $1); }
+PROGRAM:        FDEFS {
+                        $$ = makeNode("PROGRAM", NULL, $1);
+                        parseTree = $$;
+                        }
 FDEFS:
                 FDEFS FUNC_API BLK{
                                     $$ = makeNode("FDEFS", NULL, $1);
@@ -201,8 +190,7 @@ ASSN:
                                                 }
 
 ASSN_C:
-                LVAL assign_tok '('BEXP')''?' EXP ':' EXP{
-                                                            /* TODO: is this missing a ';' ?? */
+                LVAL assign_tok BEXP '?' EXP ':' EXP ';' {
                                                             $$ = makeNode("ASSN_C", NULL, $1);
                                                             concatList($1, $2);
                                                             concatList($1, $3);
@@ -211,7 +199,6 @@ ASSN_C:
                                                             concatList($1, $6);
                                                             concatList($1, $7);
                                                             concatList($1, $8);
-                                                            concatList($1, $9);
                                                             }
 
 LVAL:
@@ -346,9 +333,3 @@ void yyerror(const char* msg)
     printf("yyerror %s\n", msg);
     exit(2);
 }
-
-int main(void)
-{
-    return yyparse();
-}
-
