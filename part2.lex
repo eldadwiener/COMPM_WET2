@@ -16,7 +16,7 @@ letter      ([a-zA-Z])
 newline     (\r?\n)
 whitespace  ([\t ]|{newline})
 id          {letter}({letter}|{digit}|_)*
-num         {digit}+(.{digit}+)?(E[+-]?{digit}+)?
+num         {digit}+(\.{digit}+)?(E[+-]?{digit}+)?
 str         (\"([^"\\\n]?(\\["n\\])?)*\")
 sign        [(){}?,:;&@]
 comment     #(.*)
