@@ -12,6 +12,7 @@ void yyerror(const char*);
 ParserNode* parseTree = NULL;
 %}
 
+// token and precedence definitions
 %token int_tok float_tok void_tok
 %token return_tok
 %token volatile_tok
@@ -33,10 +34,13 @@ ParserNode* parseTree = NULL;
 
 %%
 
+// define the dictation of cmm
 PROGRAM:        FDEFS {
                         $$ = makeNode("PROGRAM", NULL, $1);
                         parseTree = $$;
                         }
+
+// representation of function definitions
 FDEFS:
                 FDEFS FUNC_API BLK{
                                     $$ = makeNode("FDEFS", NULL, $1);
@@ -53,6 +57,7 @@ FDEFS:
             |
                /* epsilon */       { $$ = makeNode("FDEFS", NULL, makeNode("EPSILON", NULL, NULL)); }
 
+// a single function declaration
 FUNC_API:
                 TYPE id_tok '(' FUNC_ARGS ')' {
                                                 $$ = makeNode("FUNC_API", NULL, $1);
@@ -62,6 +67,7 @@ FUNC_API:
                                                 concatList($1, $5);
                                                 }
 
+// function arguments (0 or more)
 FUNC_ARGS:
                 FUNC_ARGLIST { $$ = makeNode("FUNC_ARGS", NULL, $1); }
             |
@@ -76,12 +82,14 @@ FUNC_ARGLIST:
             |
                 DCL { $$ = makeNode("FUNC_ARGLIST", NULL, $1); }
 
+// represents a statements block
 BLK:            '{' STLIST '}' {
                                     $$ = makeNode("BLK", NULL, $1);
                                     concatList($1, $2);
                                     concatList($1, $3);
                                     }
 
+// variable declaration
 DCL:            id_tok ':' TYPE {
                                     $$ = makeNode("DCL", NULL, $1);
                                     concatList($1, $2);
@@ -94,6 +102,7 @@ DCL:            id_tok ':' TYPE {
                                     concatList($1, $3);
                                     }
 
+// variable type
 TYPE:
                 int_tok { $$ = makeNode("TYPE", NULL, $1); }
             |
@@ -110,7 +119,7 @@ TYPE:
                                         $$ = makeNode("TYPE", NULL, $1);
                                         concatList($1, $2);
                                         }
-
+// statement list
 STLIST:
                 STLIST STMT {
                                 $$ = makeNode("STLIST", NULL, $1);
@@ -119,6 +128,7 @@ STLIST:
             |
                /* epsilon */       { $$ = makeNode("STLIST", NULL, makeNode("EPSILON", NULL, NULL)); }
 
+// from here we start defining various statement types
 STMT:
                 DCL ';' {
                             $$ = makeNode("STMT", NULL, $1);
@@ -144,7 +154,6 @@ STMT:
             |
                 ASSN_C{ $$ = makeNode("STMT", NULL, $1); }
 
-
 RETURN:
                 return_tok EXP ';'{
                                     $$ = makeNode("RETURN", NULL, $1);
@@ -156,6 +165,7 @@ RETURN:
                                 $$ = makeNode("RETURN", NULL, $1);
                                 concatList($1, $2);
                                 }
+
 
 WRITE:
                 write_tok '(' EXP ')' ';'{
@@ -191,6 +201,7 @@ ASSN:
                                                 concatList($1, $4);
                                                 }
 
+// ternary assignment
 ASSN_C:
                 LVAL assign_tok BEXP '?' EXP ':' EXP ';' {
                                                             $$ = makeNode("ASSN_C", NULL, $1);
@@ -211,6 +222,7 @@ LVAL:
                         concatList($1, $2);
                         }
 
+// control statements (if-else, while-do)
 CNTRL:
                 if_tok BEXP then_tok STMT else_tok STMT{
                                                             $$ = makeNode("CNTRL", NULL, $1);
@@ -234,7 +246,7 @@ CNTRL:
                                             concatList($1, $3);
                                             concatList($1, $4);
                                             }
-
+// boolean expression
 BEXP:
                 BEXP or_tok BEXP{
                                     $$ = makeNode("BEXP", NULL, $1);
@@ -264,7 +276,7 @@ BEXP:
                                     concatList($1, $2);
                                     concatList($1, $3);
                                     }
-
+// normal expression
 EXP:
                 EXP addop_tok EXP{
                                     $$ = makeNode("EXP", NULL, $1);
@@ -307,6 +319,7 @@ EXP:
             |
                 CALL{ $$ = makeNode("EXP", NULL, $1); }
 
+// function call
 CALL:
                 id_tok '(' CALL_ARGS ')'{
                                                 $$ = makeNode("CALL", NULL, $1);
